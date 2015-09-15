@@ -34,7 +34,6 @@ public class Snack {
     }
 
     public String toString() {
-        return "There are " + numRemaining + " " + name + " that cost "
-            + cost + " each.";
+        return numRemaining + " " + name + " costing $" + cost + " each.";
     }
 }

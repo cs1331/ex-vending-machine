@@ -1,14 +1,46 @@
 public class VendingMachine {
 
-    public Snack[][] availableItems;
-    public double depositedMoney;
-    public double collectedMoney;
+    // This is just a list of all the possible things we could stock in our
+    // VendingMachine - quantity is 0 because these aren't actually stocked;
+    // it's just a list of possibilities
+    private static final Snack[] POSSIBLE_SNACKS = {
+        new Snack("Cheetos", 0.85, 0),
+        new Snack("Cheez-Its", 0.85, 0),
+        new Snack("Funions", 0.85, 0),
+        new Snack("Combos", 0.75, 0),
+        new Snack("Teddy Grahams", 0.75, 0),
+        new Snack("Potato Chips", 0.75, 0),
+        new Snack("Fritos", 0.75, 0),
+        new Snack("Nacho Doritos", 0.85, 0),
+        new Snack("Cool Ranch Doritos", 0.85, 0),
+        new Snack("Sun Chips", 0.85, 0),
+        new Snack("Snickers", 1.0, 0),
+        new Snack("Kit Kats", 1.0, 0),
+        new Snack("Butterfinger", 1.0, 0),
+        new Snack("Twix", 1.0, 0),
+        new Snack("Reese's Peanut Butter Cups", 1.25, 0)
+    };
 
-    public VendingMachine() {
+    private static double allCollectedMoneyEver = 0.0;
+
+    private final int NUM_ROWS;
+    private final int NUM_COLS;
+
+    private Snack[][] availableItems;
+    private double depositedMoney;
+    private double collectedMoney;
+
+    public VendingMachine(int rows, int cols, int stockingQuantity) {
         depositedMoney = 0.0;
         collectedMoney = 0.0;
-        availableItems = new Snack[3][5];
-        restockSnacks();
+        NUM_ROWS = rows;
+        NUM_COLS = cols;
+        availableItems = new Snack[NUM_ROWS][NUM_COLS];
+        restockSnacks(stockingQuantity);
+    }
+
+    public static double getAllCollectedMoneyEver() {
+        return allCollectedMoneyEver;
     }
 
     public void depositMoney(double amount) {
@@ -17,6 +49,10 @@ public class VendingMachine {
 
     public double getDepositedMoney() {
         return depositedMoney;
+    }
+
+    public double getCollectedMoney() {
+        return collectedMoney;
     }
 
     // return value (null) indicates error
@@ -28,11 +64,23 @@ public class VendingMachine {
 
             depositedMoney -= item.getCost();
             collectedMoney += item.getCost();
+            allCollectedMoneyEver += item.getCost();
             return item.getName();
 
         } else {
             return null;
         }
+    }
+
+    public String toString() {
+        String output = "";
+        for (int row = 0; row < NUM_ROWS; ++row) {
+            for (int col = 0; col < NUM_COLS; ++col) {
+                output += "Slot " + row + "-" + col + " contains: ";
+                output += availableItems[row][col].toString() + "\n";
+            }
+        }
+        return output;
     }
 
     public double getChange() {
@@ -41,23 +89,16 @@ public class VendingMachine {
         return change;
     }
 
-    private void restockSnacks() {
-        availableItems[0][0] = new Snack("Cheetos", 0.85, 10);
-        availableItems[0][1] = new Snack("Cheez-Its", 0.85, 10);
-        availableItems[0][2] = new Snack("Funions", 0.85, 10);
-        availableItems[0][3] = new Snack("Combos", 0.75, 10);
-        availableItems[0][4] = new Snack("Teddy Grahams", 0.75, 10);
-        availableItems[1][0] = new Snack("Potato Chips", 0.75, 10);
-        availableItems[1][1] = new Snack("Fritos", 0.75, 10);
-        availableItems[1][2] = new Snack("Nacho Doritos", 0.85, 10);
-        availableItems[1][3] = new Snack("Cool Ranch Doritos", 0.85, 10);
-        availableItems[1][4] = new Snack("Sun Chips", 0.85, 10);
-        availableItems[2][0] = new Snack("Snickers", 1.0, 10);
-        availableItems[2][1] = new Snack("Kit Kats", 1.0, 10);
-        availableItems[2][2] = new Snack("Butterfinger", 1.0, 10);
-        availableItems[2][3] = new Snack("Twix", 1.0, 10);
-        availableItems[2][4] = new Snack("Reese's Peanut Butter Cups",
-                                         1.25,
-                                         10);
+    private void restockSnacks(int stockingQuantity) {
+        for (int row = 0; row < NUM_ROWS; ++row) {
+            for (int col = 0; col < NUM_COLS; ++col) {
+                int snackIndex = row * NUM_COLS + col;
+                Snack snackToStock = POSSIBLE_SNACKS[snackIndex
+                                                     % POSSIBLE_SNACKS.length];
+                availableItems[row][col] = new Snack(snackToStock.getName(),
+                                                     snackToStock.getCost(),
+                                                     stockingQuantity);
+            }
+        }
     }
 }
