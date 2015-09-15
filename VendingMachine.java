@@ -2,9 +2,11 @@ public class VendingMachine {
 
     public Snack[][] availableItems;
     public double depositedMoney;
+    public double collectedMoney;
 
     public VendingMachine() {
         depositedMoney = 0.0;
+        collectedMoney = 0.0;
         availableItems = new Snack[3][5];
         restockSnacks();
     }
@@ -17,9 +19,26 @@ public class VendingMachine {
         return depositedMoney;
     }
 
+    // return value (null) indicates error
     public String vend(int row, int col) {
-        // TODO
-        return null;
+        Snack item = availableItems[row][col];
+
+        if (depositedMoney >= item.getCost()
+                && item.takeSnack()) {
+
+            depositedMoney -= item.getCost();
+            collectedMoney += item.getCost();
+            return item.getName();
+
+        } else {
+            return null;
+        }
+    }
+
+    public double getChange() {
+        double change = depositedMoney;
+        depositedMoney = 0.0;
+        return change;
     }
 
     private void restockSnacks() {

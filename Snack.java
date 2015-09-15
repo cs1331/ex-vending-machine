@@ -1,8 +1,8 @@
 public class Snack {
 
-    public String name;
-    public double cost;
-    public int numRemaining;
+    private String name;
+    private double cost;
+    private int numRemaining;
 
     public Snack(String name, double cost, int quantity) {
         numRemaining = quantity;
@@ -31,5 +31,10 @@ public class Snack {
         } else {
             return false;
         }
+    }
+
+    public String toString() {
+        return "There are " + numRemaining + " " + name + " that cost "
+            + cost + " each.";
     }
 }
